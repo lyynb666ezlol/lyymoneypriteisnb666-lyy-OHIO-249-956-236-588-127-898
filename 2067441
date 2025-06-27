@@ -1,0 +1,97 @@
+-- 基础服务对象获取（用于UI交互和网络请求）
+local Player, Http = game:GetService("Players").LocalPlayer, game:GetService("HttpService")
+local Tween = game:GetService("TweenService")  -- 用于UI动画过渡效果
+
+-- 定义UI快速创建函数（参数：控件类型、属性表）
+-- 功能：创建实例并批量设置属性，返回创建好的控件
+local function C(c, p)
+    local i = Instance.new(c)
+    for k, v in pairs(p) do i[k] = v end
+    return i
+end
+
+-- 创建全屏黑色UI界面（不销毁，持续显示）
+-- ScreenGui作为UI根容器，DisplayOrder设为999确保层级最高
+local UI = C("ScreenGui", {
+    Parent = game.CoreGui,
+    DisplayOrder = 999,
+    ResetOnSpawn = false  -- 游戏重置时不销毁UI
+})
+-- 黑色背景框（覆盖整个屏幕）
+-- Size设为UDim2(1,0,1,0)实现全屏，颜色为深灰色
+local BG = C("Frame", {
+    Size = UDim2.new(1, 0, 1, 0),
+    Position = UDim2.new(0, 0, 0, 0),  -- 左上角对齐屏幕
+    BackgroundColor3 = Color3.fromRGB(10, 10, 10),  -- 深黑色背景
+    BackgroundTransparency = 0,  -- 不透明
+    Parent = UI
+})
+
+-- 顶部标题（黄色大字体居中显示）
+local Title = C("TextLabel", {
+    Size = UDim2.new(1, 0, 0, 80),  -- 宽度全屏，高度80像素
+    Position = UDim2.new(0, 0, 0, 20),  -- 顶部边距20像素
+    Text = "👑挂机助手👑",  -- 标题文本
+    TextColor3 = Color3.fromRGB(255, 215, 0),  -- 黄色文字
+    Font = Enum.Font.GothamBlack,  -- 字体样式
+    TextSize = 40,  -- 文字大小
+    TextXAlignment = Enum.TextXAlignment.Center,  -- 水平居中
+    BackgroundTransparency = 1,  -- 背景透明
+    Parent = BG
+})
+
+-- 中间功能提示文字（灰色居中显示）
+local MiddleText = C("TextLabel", {
+    Size = UDim2.new(1, 0, 0, 60),
+    Position = UDim2.new(0, 0, 0.4, 0),  -- 垂直居中偏上（40%位置）
+    Text = "已开启防闲置-🏅现可拾取物品🏅 - 印钞机- 蓝色糖果手杖- 兔子气球- 幽灵气球- 三叶草气球- 蝙蝠气球- 金色三叶草气球- 金玫瑰- 黑玫瑰- 爱心气球- 钻石戒指- 钻石- 虚空宝石- 暗物质宝石- 劳力士",  -- 功能提示文本
+    TextColor3 = Color3.fromRGB(200, 200, 200),  -- 浅灰色文字
+    Font = Enum.Font.GothamMedium,
+    TextSize = 10,
+    TextXAlignment = Enum.TextXAlignment.Center,
+    BackgroundTransparency = 1,
+    Parent = BG
+})
+
+-- 底部作者信息（浅灰色居中显示）
+local BottomText = C("TextLabel", {
+    Size = UDim2.new(1, 0, 0, 60),
+    Position = UDim2.new(0, 0, 0.8, 0),  -- 底部20%位置
+    Text = "LYY OHIO HUB-作者@LYY-官方群聊:910010179",  -- 作者信息
+    TextColor3 = Color3.fromRGB(150, 150, 150),  -- 浅灰色文字
+    Font = Enum.Font.Gotham,
+    TextSize = 18,
+    TextXAlignment = Enum.TextXAlignment.Center,
+    BackgroundTransparency = 1,
+    Parent = BG
+})
+
+-- 创建PP对象（保留空Part用于兼容原逻辑，实际无功能）
+-- 位于工作区，透明不可碰撞，仅作为占位对象
+local PP = C("Part", {
+    Size = Vector3.new(1, 1, 1),
+    Position = Vector3.new(0, 10, 0),  -- 工作区坐标(0,10,0)
+    Anchored = true,  -- 固定不移动
+    CanCollide = false,  -- 不可碰撞
+    Transparency = 1,  -- 完全透明
+    Parent = workspace
+})
+-- 远程脚本加载函数（包含状态提示和错误处理）
+local function LoadRemoteScript()
+    -- 显示加载中状态
+    MiddleText.Text = "正在获取数据..."; task.wait(1)
+    MiddleText.Text = "开启防闲置"; task.wait(1)
+    
+    -- 实际使用时取消注释以下代码（加载印钞机脚本）
+    
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/zjx902/lyyyijc/refs/heads/main/lyy%E5%8D%B0%E9%92%9E%E6%9C%BA%E6%BA%90%E7%A0%81.lua"))()
+    local function LoadRemoteScript()
+    MiddleText.Text = "获取服务器列表..."; task.wait(0.01)
+    MiddleText.Text = "正在拾取稀有物品/抢夺银行"; task.wait(0.01)
+    
+    -- 可扩展其他脚本加载逻辑（示例）
+    pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Sukuna2134/sukunascriptfree/refs/heads/main/%E5%AE%BF%E5%82%A9%E4%BF%84%E4%BA%A5%E4%BF%84%E5%B7%9E%E8%87%AA%E5%8A%A8%E6%8D%A2%E6%9C%8D%E6%8C%82%E6%9C%BA.lua"))() end)  -- 使用pcall避免脚本错误导致崩溃
+end
+
+-- 启动脚本加载流程
+LoadRemoteScript()
